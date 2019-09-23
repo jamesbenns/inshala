@@ -1,81 +1,51 @@
 import React from "react"
 import { Link, graphql } from "gatsby"
-
-import Bio from "../components/bio"
-import Layout from "../components/layout"
-import SEO from "../components/seo"
-import { rhythm, scale } from "../utils/typography"
+import ReactMapGL, {Marker} from 'react-map-gl';
+import pin from '../../static/pin.png';
 
 class BlogPostTemplate extends React.Component {
+  mapBoxToken = 'pk.eyJ1IjoiamFtZXNiZW5ucyIsImEiOiJjazB1bjI2ZnQwMGh6M2xxdjVmNjdlN3FxIn0.tpcyfL3ZMj552DADyRP1bQ';
+  posts = this.props.data.allMarkdownRemark.edges.map(({node}) => node).filter(post => !!post.frontmatter.title);
+  currentIndex = this.posts.findIndex(post => post.fields.slug === this.props.pathContext.slug);
+  post = this.props.data.markdownRemark;
+  state = {
+    viewport: {
+      latitude: parseFloat(this.props.data.markdownRemark.frontmatter.lat),
+      longitude: parseFloat(this.props.data.markdownRemark.frontmatter.lon),
+      zoom: 10
+    }
+  }
   render() {
-    const post = this.props.data.markdownRemark
-    const siteTitle = this.props.data.site.siteMetadata.title
-    const { previous, next } = this.props.pageContext
-
+    const nextPost = this.posts[this.currentIndex - 1];
+    const previousPost = this.posts[this.currentIndex + 1];
     return (
-      <Layout location={this.props.location} title={siteTitle}>
-        <SEO
-          title={post.frontmatter.title}
-          description={post.frontmatter.description || post.excerpt}
-        />
-        <article>
+      <div>
+        {!!nextPost && <Link to={nextPost.fields.slug} rel="next">
+          <div className={'next arrow'}>←</div>
+        </Link>}
+        {!!previousPost && <Link to={previousPost.fields.slug} rel="previous">
+          <div className={'previous arrow'}>→</div>
+        </Link>}
+        <ReactMapGL
+          width={'100%'}
+          height={400}
+          {...this.state.viewport}
+          mapboxApiAccessToken={this.mapBoxToken}
+          onViewportChange={({width, height, ...viewport}) => this.setState({viewport})}
+        >
+          <Marker offsetTop={-60} offsetLeft={-18} latitude={parseFloat(this.props.data.markdownRemark.frontmatter.lat)} longitude={parseFloat(this.props.data.markdownRemark.frontmatter.lon)}>
+            <img height={'60px'} src={pin} alt=''/>
+          </Marker>
+        </ReactMapGL>
+        <article className={'blog-post'}>
+          <div className={'line'}></div>
           <header>
-            <h1
-              style={{
-                marginTop: rhythm(1),
-                marginBottom: 0,
-              }}
-            >
-              {post.frontmatter.title}
-            </h1>
-            <p
-              style={{
-                ...scale(-1 / 5),
-                display: `block`,
-                marginBottom: rhythm(1),
-              }}
-            >
-              {post.frontmatter.date}
-            </p>
+              <h3 className={'no-margin'}>{this.post.frontmatter.date}</h3>
+              <h1 className={'no-margin'}>{this.post.frontmatter.title}</h1>
           </header>
-          <section dangerouslySetInnerHTML={{ __html: post.html }} />
-          <hr
-            style={{
-              marginBottom: rhythm(1),
-            }}
-          />
-          <footer>
-            <Bio />
-          </footer>
+          <section dangerouslySetInnerHTML={{ __html: this.post.html }} />
         </article>
-
-        <nav>
-          <ul
-            style={{
-              display: `flex`,
-              flexWrap: `wrap`,
-              justifyContent: `space-between`,
-              listStyle: `none`,
-              padding: 0,
-            }}
-          >
-            <li>
-              {previous && (
-                <Link to={previous.fields.slug} rel="prev">
-                  ← {previous.frontmatter.title}
-                </Link>
-              )}
-            </li>
-            <li>
-              {next && (
-                <Link to={next.fields.slug} rel="next">
-                  {next.frontmatter.title} →
-                </Link>
-              )}
-            </li>
-          </ul>
-        </nav>
-      </Layout>
+      </div>
     )
   }
 }
@@ -98,6 +68,20 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         description
+        lat
+        lon
+      }
+    }
+    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+      edges {
+        node {
+          fields {
+            slug
+          }
+          frontmatter {
+            title
+          }
+        }
       }
     }
   }
