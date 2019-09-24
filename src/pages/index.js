@@ -9,6 +9,7 @@ import PolylineOverlay from "../components/line-overlay";
 import getPathLength from 'geolib/es/getPathLength';
 import getBounds from 'geolib/es/getBounds';
 import WebMercatorViewport from 'viewport-mercator-project';
+import { Helmet } from "react-helmet"
 
 class BlogIndex extends React.Component {
   mapBoxToken = 'pk.eyJ1IjoiamFtZXNiZW5ucyIsImEiOiJjazB1bjI2ZnQwMGh6M2xxdjVmNjdlN3FxIn0.tpcyfL3ZMj552DADyRP1bQ';
@@ -48,6 +49,10 @@ class BlogIndex extends React.Component {
   render() {
     return (
       <main>
+        <Helmet>
+          <title>Follow Inshala!</title>
+          <script src='https://identity.netlify.com/v1/netlify-identity-widget.js'></script>
+        </Helmet>
         <div className={'line'}></div>
         <div className={'posts'}>
           <div className={'title'}>

@@ -2,6 +2,7 @@ import React from "react"
 import { Link, graphql } from "gatsby"
 import ReactMapGL, {Marker} from 'react-map-gl';
 import pin from '../../static/pin.png';
+import { Helmet } from "react-helmet"
 
 class BlogPostTemplate extends React.Component {
   mapBoxToken = 'pk.eyJ1IjoiamFtZXNiZW5ucyIsImEiOiJjazB1bjI2ZnQwMGh6M2xxdjVmNjdlN3FxIn0.tpcyfL3ZMj552DADyRP1bQ';
@@ -20,6 +21,9 @@ class BlogPostTemplate extends React.Component {
     const previousPost = this.posts[this.currentIndex + 1];
     return (
       <div>
+        <Helmet>
+          <title>⛵- {this.post.frontmatter.title}</title>
+        </Helmet>
         {!!nextPost && <Link to={nextPost.fields.slug} rel="next">
           <div className={'next arrow'}>←</div>
         </Link>}
