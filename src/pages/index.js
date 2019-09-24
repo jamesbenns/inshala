@@ -5,6 +5,7 @@ import CheckIn from "../components/timeline-checkin";
 import Post from "../components/timeline-post";
 import ReactMapGL, {Marker, FlyToInterpolator} from 'react-map-gl';
 import pin from '../../static/pin.png';
+import postPin from '../../static/post-pin.png';
 import PolylineOverlay from "../components/line-overlay";
 import getPathLength from 'geolib/es/getPathLength';
 import getBounds from 'geolib/es/getBounds';
@@ -18,7 +19,8 @@ class BlogIndex extends React.Component {
     coordinates: this.props.data.allMarkdownRemark.edges.map(({node}) => ({
       latitude: parseFloat(node.frontmatter.lat),
       longitude: parseFloat(node.frontmatter.lon),
-      slug: node.fields.slug
+      slug: node.fields.slug,
+      post: !!node.frontmatter.description
     })),
     posts: this.props.data.allMarkdownRemark.edges,
     viewport: {
@@ -101,8 +103,15 @@ class BlogIndex extends React.Component {
             onViewportChange={(viewport) => this.setState({viewport})}
           >
             <PolylineOverlay points={this.state.coordinates.map(({latitude, longitude}) => [latitude, longitude])}></PolylineOverlay>
-            {this.state.coordinates.map(({latitude, longitude, slug}) => 
-              <Marker offsetTop={-30} offsetLeft={-9} key={slug} latitude={latitude} longitude={longitude}><img height={'30px'} src={pin} alt=''/></Marker>
+            {this.state.coordinates.map(({latitude, longitude, slug, post}) => {
+              if(post) {
+                return <Link to={slug}>
+                  <Marker offsetTop={-25} offsetLeft={-35} key={slug} latitude={latitude} longitude={longitude}><img height={'25px'} src={postPin} alt=''/></Marker>
+                </Link>
+              } else {
+                return <Marker offsetTop={-20} offsetLeft={-5} key={slug} latitude={latitude} longitude={longitude}><img height={'20px'} src={pin} alt=''/></Marker>
+              }
+            }
             )}
           </ReactMapGL>
         </div>
