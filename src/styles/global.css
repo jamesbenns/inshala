@@ -146,6 +146,10 @@ article.blog-post .line {
     width: 30px;
 }
 
+p img {
+    width: 100%;
+}
+
 .arrow {
     position: absolute;
     top: 200px;
