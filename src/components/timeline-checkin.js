@@ -9,7 +9,7 @@ class CheckIn extends React.Component {
                 <img alt={''} src={pin}/>
                 <header>
                     <h3 className={'no-margin'}>{this.props.date}</h3>
-                    <h1 className={'no-margin'}>Auto check-in</h1>
+                    <h1 className={'no-margin'}>{this.props.title}</h1>
                 </header>
             </article>
         );
