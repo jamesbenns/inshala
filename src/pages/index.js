@@ -85,7 +85,7 @@ class BlogIndex extends React.Component {
                 }
               })}>
               {
-                !title ? <CheckIn date={date}></CheckIn> :
+                !description ? <CheckIn date={date}></CheckIn> :
                 <Link to={node.fields.slug}>
                   <Post date={date} title={title} description={description}></Post>
                 </Link>

@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet"
 
 class BlogPostTemplate extends React.Component {
   mapBoxToken = 'pk.eyJ1IjoiamFtZXNiZW5ucyIsImEiOiJjazB1bjI2ZnQwMGh6M2xxdjVmNjdlN3FxIn0.tpcyfL3ZMj552DADyRP1bQ';
-  posts = this.props.data.allMarkdownRemark.edges.map(({node}) => node).filter(post => !!post.frontmatter.title);
+  posts = this.props.data.allMarkdownRemark.edges.map(({node}) => node).filter(post => !!post.frontmatter.description);
   currentIndex = this.posts.findIndex(post => post.fields.slug === this.props.pathContext.slug);
   post = this.props.data.markdownRemark;
   state = {
@@ -83,7 +83,7 @@ export const pageQuery = graphql`
             slug
           }
           frontmatter {
-            title
+            description
           }
         }
       }
