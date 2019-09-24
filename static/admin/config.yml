@@ -7,13 +7,13 @@ public_folder: "/images/uploads"
 collections:
   - name: "blog" # Used in routes, e.g., /admin/collections/blog
     label: "Blog" # Used in the UI
-    folder: "content/blog/{{slug}}" # The path to the folder where the documents are stored
+    folder: "content/blog" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     slug: "{{year}}-{{month}}-{{day}}-{{hour}}-{{minute}}" # Filename template, e.g., YYYY-MM-DD-title.md
     fields: # The fields for each document, usually in front matter
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Publish Date", name: "date", widget: "datetime"}
       - {label: "Description", name: "description", widget: "string"}
-      - {label: "Latitude", name: "lat", widget: "number"}
-      - {label: "Longitude", name: "lon", widget: "number"}
+      - {label: "Latitude", name: "lat", widget: "string"}
+      - {label: "Longitude", name: "lon", widget: "string"}
       - {label: "Body", name: "body", widget: "markdown"}
