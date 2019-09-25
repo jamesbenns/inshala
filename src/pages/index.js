@@ -104,7 +104,7 @@ class BlogIndex extends React.Component {
                   ...coordinates,
                   zoom: 10,
                   transitionInterpolator: new FlyToInterpolator(),
-                  transitionDuration: 2000
+                  transitionDuration: 1000
                 }
               })}>
               {

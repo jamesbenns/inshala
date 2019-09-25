@@ -52,7 +52,6 @@ h1 {
     position: relative;
     margin: 70px 0;
     transition: all 0.2s;
-    transform-origin: 30px center;
     cursor: pointer;
 }
 
@@ -69,6 +68,7 @@ h1 {
     display: flex;
     padding-left: 9px;
     align-items: center;
+    transform-origin: 30px center;
 }
 
 .posts article.check-in > header {
