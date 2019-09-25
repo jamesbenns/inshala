@@ -56,10 +56,6 @@ h1 {
     cursor: pointer;
 }
 
-.posts a::selection {
-    background: transparent;
-}
-
 .posts article:hover {
     transform: scale(1.1);
 }
@@ -183,6 +179,9 @@ p img {
 }
 
 @media (max-width: 1000px) {
+    ::selection {
+        background: transparent;
+    }
     .map {
         position: absolute;
         height: 300px;
