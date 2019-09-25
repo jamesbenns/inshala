@@ -14,12 +14,10 @@
     var PostPreview = createClass({
       render: function() {
         var entry = this.props.entry;
-        var postDate = this.props.widgetFor('date');
-        var date = new Date(postDate);
-        var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric'});
+        console.log(this.props.widgetFor('body'));
+        console.log(this.props.widgetFor('date'));
         return h('article', {className: 'blog-post'},
           h('header', {},
-            h('h3', {className: 'no-margin'}, formattedDate),
             h('h1', {className: 'no-margin'}, entry.getIn(['data', 'title'])),
           ),
           h('section', {}, this.props.widgetFor('body'))
