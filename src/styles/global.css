@@ -179,8 +179,8 @@ p img {
 }
 
 @media (max-width: 1000px) {
-    ::selection {
-        background: transparent;
+    * {
+        -webkit-tap-highlight-color: transparent;
     }
     .map {
         position: absolute;
