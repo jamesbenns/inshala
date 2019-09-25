@@ -3,7 +3,7 @@ module.exports = {
     title: `Sailing Yacht Inshala`,
     author: `James Benns`,
     description: `Follow sailing yacht Inshala`,
-    siteUrl: `www.inshala.freedomyachting.com`,
+    siteUrl: `https://www.inshala.freedomyachting.com`,
     social: {},
   },
   plugins: [
