@@ -16,13 +16,28 @@ class BlogIndex extends React.Component {
   mapBoxToken = 'pk.eyJ1IjoiamFtZXNiZW5ucyIsImEiOiJjazB1bjI2ZnQwMGh6M2xxdjVmNjdlN3FxIn0.tpcyfL3ZMj552DADyRP1bQ';
   mapContainer = React.createRef();
   state = {
+    mapFixed: false,
+    highlightedPin: '',
     coordinates: this.props.data.allMarkdownRemark.edges.map(({node}) => ({
       latitude: parseFloat(node.frontmatter.lat),
       longitude: parseFloat(node.frontmatter.lon),
       slug: node.fields.slug,
       post: !!node.frontmatter.description
     })),
-    posts: this.props.data.allMarkdownRemark.edges,
+    posts: this.props.data.allMarkdownRemark.edges.map(({node}) => {
+      const ref = React.createRef();
+      return {
+        slug: node.fields.slug,
+        title: node.frontmatter.title,
+        date: node.frontmatter.date,
+        coordinates: {
+          latitude: parseFloat(node.frontmatter.lat),
+          longitude: parseFloat(node.frontmatter.lon)
+        },
+        description: node.frontmatter.description,
+        ref: ref
+      }
+    }),
     viewport: {
       width: '100%',
       height: '100%'
@@ -30,6 +45,7 @@ class BlogIndex extends React.Component {
   };
 
   componentDidMount() {
+    window.addEventListener('scroll', () => this.setState({mapFixed: window.pageYOffset >= 200}));
     const bounds = getBounds(this.state.coordinates);
     const { longitude, latitude, zoom } = new WebMercatorViewport({width: this.mapContainer.current.clientWidth, height: this.mapContainer.current.clientHeight})
       .fitBounds([
@@ -46,6 +62,18 @@ class BlogIndex extends React.Component {
         zoom
       }
     });
+  }
+
+  scrollToPost = (slug) => {
+    this.setState({highlightedPin: slug});
+    window.scrollTo({
+      top: this.state.posts.find(post => post.slug === slug).ref.current.offsetTop - (window.innerWidth > 1000 ? 50 : 350),
+      behavior: 'smooth'
+    })
+  }
+
+  clearPin = () => {
+    this.setState({highlightedPin: ''});
   }
 
   render() {
@@ -68,16 +96,9 @@ class BlogIndex extends React.Component {
               {parseInt(getPathLength(this.state.coordinates) * 0.000539957)} nautical miles so far
             </h3>
           </div>
-          {this.state.posts.map( ({ node }) => {
-            const title = node.frontmatter.title;
-            const date = node.frontmatter.date;
-            const coordinates = {
-              latitude: parseFloat(node.frontmatter.lat),
-              longitude: parseFloat(node.frontmatter.lon)
-            };
-            const description = node.frontmatter.description;
+          {this.state.posts.map( ({slug, coordinates, description, date, title, ref}) => {
             return (
-              <div key={node.fields.slug} onMouseEnter={() => this.setState({
+              <div ref={ref} className={this.state.highlightedPin === slug ? 'active' : ''} key={slug} onMouseEnter={() => this.setState({
                 viewport: {
                   ...this.state.viewport,
                   ...coordinates,
@@ -88,7 +109,7 @@ class BlogIndex extends React.Component {
               })}>
               {
                 !description ? <CheckIn date={date} title={title}></CheckIn> :
-                <Link to={node.fields.slug}>
+                <Link to={slug}>
                   <Post date={date} title={title} description={description}></Post>
                 </Link>
               }
@@ -96,8 +117,8 @@ class BlogIndex extends React.Component {
             )
           })}
         </div>
-        <div className={'map'} ref={this.mapContainer}>
-          <ReactMapGL 
+        <div className={`map ${this.state.mapFixed ? 'fixed' : ''}`} ref={this.mapContainer}>
+          <ReactMapGL
             {...this.state.viewport}
             mapboxApiAccessToken={this.mapBoxToken}
             onViewportChange={(viewport) => this.setState({viewport})}
@@ -105,11 +126,13 @@ class BlogIndex extends React.Component {
             <PolylineOverlay points={this.state.coordinates.map(({latitude, longitude}) => [latitude, longitude])}></PolylineOverlay>
             {this.state.coordinates.map(({latitude, longitude, slug, post}) => {
               if(post) {
-                return <Link to={slug}>
-                  <Marker offsetTop={-25} offsetLeft={-35} key={slug} latitude={latitude} longitude={longitude}><img height={'25px'} src={postPin} alt=''/></Marker>
-                </Link>
+                return <div key={slug} onMouseEnter={() => this.scrollToPost(slug)} onMouseLeave={this.clearPin}><Link to={slug}>
+                  <Marker offsetTop={-25} offsetLeft={-35} latitude={latitude} longitude={longitude}><img style={{cursor: 'pointer'}} height={'25px'} src={postPin} alt=''/></Marker>
+                </Link></div>
               } else {
-                return <Marker offsetTop={-20} offsetLeft={-5} key={slug} latitude={latitude} longitude={longitude}><img height={'20px'} src={pin} alt=''/></Marker>
+                return <div key={slug} onMouseEnter={() => this.scrollToPost(slug)} onMouseLeave={this.clearPin}>
+                  <Marker offsetTop={-20} offsetLeft={-5} latitude={latitude} longitude={longitude}><img height={'20px'} src={pin} alt=''/></Marker>
+                </div>
               }
             }
             )}

@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    outline: none;
 }
 
 body {
@@ -55,8 +56,16 @@ h1 {
     cursor: pointer;
 }
 
+.posts a::selection {
+    background: transparent;
+}
+
 .posts article:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+}
+
+.posts .active article {
+    transform: scale(1.15);
 }
 
 .posts article.check-in {
@@ -176,15 +185,19 @@ p img {
 @media (max-width: 1000px) {
     .map {
         position: absolute;
-        height: 400px;
+        height: 300px;
         top: 200px;
         left: 0;
         bottom: unset;
         background: #eee
     }
+    .map.fixed {
+        position: fixed;
+        top: 0;
+    }
     .title {
         padding-top: 50px;
-        margin-bottom: 520px;
+        margin-bottom: 400px;
     }
     .posts {
         width: 100%;
