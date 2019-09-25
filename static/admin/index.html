@@ -14,11 +14,8 @@
     var PostPreview = createClass({
       render: function() {
         var entry = this.props.entry;
-        var postDate = this.props.widgetFor('date');
-        var dateParts = this.props.widgetFor('date').toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric'}).split(' ');
         return h('article', {className: 'blog-post'},
           h('header', {},
-            h('h3', {className: 'no-margin'}, `${dateParts[1]} ${dateParts[0]}, ${dateParts[2]}`),
             h('h1', {className: 'no-margin'}, entry.getIn(['data', 'title'])),
           ),
           h('section', {}, this.props.widgetFor('body'))
