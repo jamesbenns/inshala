@@ -15,8 +15,8 @@
       render: function() {
         var entry = this.props.entry;
         return h('div', {},
-          // h('h3', {}, entry.getIn(['data', 'date'])),
-          // h('h1', {}, entry.getIn(['data', 'title'])),
+          h('h3', {}, this.props.widgetFor('date')),
+          h('h1', {}, entry.getIn(['data', 'title'])),
           h('div', {}, this.props.widgetFor('body'))
         );
       }
