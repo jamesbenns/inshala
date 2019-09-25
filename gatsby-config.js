@@ -3,10 +3,8 @@ module.exports = {
     title: `Sailing Yacht Inshala`,
     author: `James Benns`,
     description: `Follow sailing yacht Inshala`,
-    siteUrl: `https://gatsby-starter-blog-demo.netlify.com/`,
-    social: {
-      twitter: `kylemathews`,
-    },
+    siteUrl: `www.inshala.freedomyachting.com`,
+    social: {},
   },
   plugins: [
     {
@@ -47,7 +45,6 @@ module.exports = {
     },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
-    // `gatsby-plugin-feed`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

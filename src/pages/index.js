@@ -13,31 +13,33 @@ import WebMercatorViewport from 'viewport-mercator-project';
 import { Helmet } from "react-helmet"
 
 class BlogIndex extends React.Component {
+
   mapBoxToken = 'pk.eyJ1IjoiamFtZXNiZW5ucyIsImEiOiJjazB1bjI2ZnQwMGh6M2xxdjVmNjdlN3FxIn0.tpcyfL3ZMj552DADyRP1bQ';
   mapContainer = React.createRef();
+  mediaBreakpoint = 1000;
+
+  coordinates = this.props.data.allMarkdownRemark.edges.map(({node}) => ({
+    latitude: parseFloat(node.frontmatter.lat),
+    longitude: parseFloat(node.frontmatter.lon),
+    slug: node.fields.slug,
+    post: !!node.frontmatter.description
+  }));
+
+  posts = this.props.data.allMarkdownRemark.edges.map(({node}) => ({
+    slug: node.fields.slug,
+    title: node.frontmatter.title,
+    date: node.frontmatter.date,
+    coordinates: {
+      latitude: parseFloat(node.frontmatter.lat),
+      longitude: parseFloat(node.frontmatter.lon)
+    },
+    description: node.frontmatter.description,
+    ref: React.createRef()
+  }));
+
   state = {
     mapFixed: false,
     highlightedPin: '',
-    coordinates: this.props.data.allMarkdownRemark.edges.map(({node}) => ({
-      latitude: parseFloat(node.frontmatter.lat),
-      longitude: parseFloat(node.frontmatter.lon),
-      slug: node.fields.slug,
-      post: !!node.frontmatter.description
-    })),
-    posts: this.props.data.allMarkdownRemark.edges.map(({node}) => {
-      const ref = React.createRef();
-      return {
-        slug: node.fields.slug,
-        title: node.frontmatter.title,
-        date: node.frontmatter.date,
-        coordinates: {
-          latitude: parseFloat(node.frontmatter.lat),
-          longitude: parseFloat(node.frontmatter.lon)
-        },
-        description: node.frontmatter.description,
-        ref: ref
-      }
-    }),
     viewport: {
       width: '100%',
       height: '100%'
@@ -46,7 +48,12 @@ class BlogIndex extends React.Component {
 
   componentDidMount() {
     window.addEventListener('scroll', () => this.setState({mapFixed: window.pageYOffset >= 200}));
-    const bounds = getBounds(this.state.coordinates);
+    window.addEventListener('resize', () => this.setState({viewport: {
+      ...this.state.viewport,
+      width: window.innerWidth - (window.innerWidth > this.mediaBreakpoint ? 400 : 0),
+      height: window.innerWidth > this.mediaBreakpoint ? window.innerHeight : 300
+    }}));
+    const bounds = getBounds(this.coordinates);
     const { longitude, latitude, zoom } = new WebMercatorViewport({width: this.mapContainer.current.clientWidth, height: this.mapContainer.current.clientHeight})
       .fitBounds([
         [bounds['maxLng'], bounds['maxLat']],
@@ -64,17 +71,15 @@ class BlogIndex extends React.Component {
     });
   }
 
-  scrollToPost = (slug) => {
+  scrollToPost = slug => {
     this.setState({highlightedPin: slug});
     window.scrollTo({
-      top: this.state.posts.find(post => post.slug === slug).ref.current.offsetTop - (window.innerWidth > 1000 ? 50 : 350),
+      top: this.posts.find(post => post.slug === slug).ref.current.offsetTop - (window.innerWidth > this.mediaBreakpoint ? 50 : 350),
       behavior: 'smooth'
     })
   }
 
-  clearPin = () => {
-    this.setState({highlightedPin: ''});
-  }
+  clearPin = () => this.setState({highlightedPin: ''});
 
   render() {
     return (
@@ -93,10 +98,10 @@ class BlogIndex extends React.Component {
                 <div className={'ringring'}></div>
                 <div className={'circle'}></div>
               </div>
-              {parseInt(getPathLength(this.state.coordinates) * 0.000539957)} nautical miles so far
+              {parseInt(getPathLength(this.coordinates) * 0.000539957)} NM so far
             </h3>
           </div>
-          {this.state.posts.map( ({slug, coordinates, description, date, title, ref}) => {
+          {this.posts.map( ({slug, coordinates, description, date, title, ref}) => {
             return (
               <div ref={ref} className={this.state.highlightedPin === slug ? 'active' : ''} key={slug} onMouseEnter={() => this.setState({
                 viewport: {
@@ -123,8 +128,8 @@ class BlogIndex extends React.Component {
             mapboxApiAccessToken={this.mapBoxToken}
             onViewportChange={(viewport) => this.setState({viewport})}
           >
-            <PolylineOverlay points={this.state.coordinates.map(({latitude, longitude}) => [latitude, longitude])}></PolylineOverlay>
-            {this.state.coordinates.map(({latitude, longitude, slug, post}) => {
+            <PolylineOverlay points={this.coordinates.map(({latitude, longitude}) => [latitude, longitude])}></PolylineOverlay>
+            {this.coordinates.map(({latitude, longitude, slug, post}) => {
               if(post) {
                 return <div key={slug} onMouseEnter={() => this.scrollToPost(slug)} onMouseLeave={this.clearPin}><Link to={slug}>
                   <Marker offsetTop={-25} offsetLeft={-35} latitude={latitude} longitude={longitude}><img style={{cursor: 'pointer'}} height={'25px'} src={postPin} alt=''/></Marker>
