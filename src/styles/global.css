@@ -49,7 +49,7 @@ h1 {
 .posts article {
     background: #fff;
     padding: 15px 0;
-    padding-left: 10px;
+    padding-right: 10px;
     position: relative;
     margin: 70px 0;
     transition: all 0.2s;
