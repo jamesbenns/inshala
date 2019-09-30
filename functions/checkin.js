@@ -10,10 +10,12 @@ exports.handler = function(event, context) {
     if (event.httpMethod !== "POST") {
         return { statusCode: 405, body: "Method Not Allowed" };
     }
+    console.log('params 1');
     const params = querystring.parse(event.body);
     console.log('params', params);
     var firstNotification = new OneSignal.Notification({      
-        template_id: "726887ee-8f4f-4eaf-bc13-09e96864e467"      
+        template_id: "726887ee-8f4f-4eaf-bc13-09e96864e467",
+        included_segments: ["Subscribed Users"]     
     });
     myClient.sendNotification(firstNotification)      
     .then(function (response) {      
