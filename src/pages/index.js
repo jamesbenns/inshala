@@ -69,6 +69,12 @@ class BlogIndex extends React.Component {
         zoom
       }
     });
+    var OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+      OneSignal.init({
+        appId: "8ba1ae7c-e229-4102-a348-9c8b5c5923ed",
+      });
+    });
   }
 
   scrollToPost = slug => {
@@ -87,6 +93,7 @@ class BlogIndex extends React.Component {
         <Helmet>
           <title>Follow Inshala!</title>
           <script src='https://identity.netlify.com/v1/netlify-identity-widget.js'></script>
+          <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
         </Helmet>
         <div className={'line'}></div>
         <div className={'posts'}>
