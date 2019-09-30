@@ -1,5 +1,5 @@
-var OneSignal = require('onesignal-node');      
-import querystring from "querystring";
+var OneSignal = require('onesignal-node');
+var querystring = require("querystring");
 var myClient = new OneSignal.Client({      
     userAuthKey: 'MzRiZDcyMGItMzkxMC00MWQ1LTk5NTMtMDdlYjhjY2E1Y2Mw',      
     // note that "app" must have "appAuthKey" and "appId" keys      
