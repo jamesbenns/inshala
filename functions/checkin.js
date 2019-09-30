@@ -15,8 +15,8 @@ exports.handler = function(event, context) {
         return buff.toString('ascii');
     }).join(' ');
     const messageSearchTerm = 'Content-Disposition: form-data; name="text"';
-    const messageSection = mail.subStr(mail.indexOf(messageSearchTerm) + messageSearchTerm.length);
-    const message = messageSection.subStr(0, messageSection.indexOf('--xYzZY'));
+    const messageSection = mail.substr(mail.indexOf(messageSearchTerm) + messageSearchTerm.length);
+    const message = messageSection.substr(0, messageSection.indexOf('--xYzZY'));
 
     console.log(message);
 
