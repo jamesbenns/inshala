@@ -11,7 +11,12 @@ exports.handler = function(event, context) {
     }
     console.log(event.httpMethod);
     const parts = event.body.split('+');
-    const mail = parts.map(part => atob(part)).join(' ')
+
+    const mail = parts.map(part => {
+        let buff = new Buffer(part, 'base64');
+        return buff.toString('ascii');
+    }).join(' ');
+
     console.log(mail);
     var firstNotification = new OneSignal.Notification({      
         template_id: "726887ee-8f4f-4eaf-bc13-09e96864e467",
