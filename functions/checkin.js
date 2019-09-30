@@ -19,18 +19,16 @@ exports.handler = function(event, context) {
     const message = messageSection.substr(0, messageSection.indexOf('--xYzZY')).trim();
 
     console.log(message);
-    const lat = message.split('lat: ')[0].split(' ');
-    const lon = message.split('lon: ')[0].split(' ');
+    const lat = message.split('lat: ')[1].split(' ')[0];
+    const lon = message.split('lon: ')[1].split(' ')[0];
     const date = new Date();
     const doc = 
-`
----
+`---
 title: Auto check-in
 date: ${date.toISOString()}
 lat: '${lat}'
 lon: '${lon}'
----
-`;
+---`;
 
     axios({
         method: 'post',
