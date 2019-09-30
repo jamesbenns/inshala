@@ -103,14 +103,15 @@ class BlogIndex extends React.Component {
           </div>
           {this.posts.map( ({slug, coordinates, description, date, title, ref}) => {
             return (
-              <div ref={ref} className={this.state.highlightedPin === slug ? 'active' : ''} key={slug} onMouseEnter={() => this.setState({
+              <div ref={ref} className={this.state.highlightedPin === slug ? 'active' : ''} key={slug} onMouseLeave={this.clearPin} onMouseEnter={() => this.setState({
                 viewport: {
                   ...this.state.viewport,
                   ...coordinates,
                   zoom: 10,
                   transitionInterpolator: new FlyToInterpolator(),
                   transitionDuration: 1000
-                }
+                },
+                highlightedPin: slug
               })}>
               {
                 !description ? <CheckIn date={date} title={title}></CheckIn> :
@@ -132,11 +133,15 @@ class BlogIndex extends React.Component {
             {this.coordinates.map(({latitude, longitude, slug, post}) => {
               if(post) {
                 return <div key={slug} onMouseEnter={() => this.scrollToPost(slug)} onMouseLeave={this.clearPin}><Link to={slug}>
-                  <Marker offsetTop={-25} offsetLeft={-35} latitude={latitude} longitude={longitude}><img style={{cursor: 'pointer'}} height={'25px'} src={postPin} alt=''/></Marker>
+                  <Marker offsetTop={-25} offsetLeft={-35} latitude={latitude} longitude={longitude}>
+                    <img className={this.state.highlightedPin === slug ? 'enlarge post-pin' : 'post-pin'}  style={{cursor: 'pointer'}} height={'25px'} src={postPin} alt=''/>
+                  </Marker>
                 </Link></div>
               } else {
                 return <div key={slug} onMouseEnter={() => this.scrollToPost(slug)} onMouseLeave={this.clearPin}>
-                  <Marker offsetTop={-20} offsetLeft={-5} latitude={latitude} longitude={longitude}><img height={'20px'} src={pin} alt=''/></Marker>
+                  <Marker offsetTop={-20} offsetLeft={-5} latitude={latitude} longitude={longitude}>
+                    <img className={this.state.highlightedPin === slug ? 'enlarge checkin-pin' : 'checkin-pin'} height={'20px'} src={pin} alt=''/>
+                  </Marker>
                 </div>
               }
             }

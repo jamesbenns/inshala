@@ -21,6 +21,11 @@ class BlogPostTemplate extends React.Component {
     const previousPost = this.posts[this.currentIndex + 1];
     return (
       <div>
+        <div className={'home-container'}>
+          <Link to='/'>
+            <h1>Inshala</h1>
+          </Link>
+        </div>
         <Helmet>
           <title>⛵- {this.post.frontmatter.title}</title>
         </Helmet>
@@ -35,7 +40,7 @@ class BlogPostTemplate extends React.Component {
           height={400}
           {...this.state.viewport}
           mapboxApiAccessToken={this.mapBoxToken}
-          onViewportChange={({width, height, ...viewport}) => this.setState({viewport})}
+          onViewportChange={({zoom, ...viewport}) => this.setState({viewport: {...this.state.viewport, zoom}})}
         >
           <Marker offsetTop={-60} offsetLeft={-18} latitude={parseFloat(this.props.data.markdownRemark.frontmatter.lat)} longitude={parseFloat(this.props.data.markdownRemark.frontmatter.lon)}>
             <img height={'60px'} src={pin} alt=''/>

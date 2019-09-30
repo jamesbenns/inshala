@@ -46,6 +46,22 @@ h1 {
     position: relative;
 }
 
+.post-pin, .checkin-pin {
+    transition: all 0.5s;
+}
+
+.post-pin {
+    transform-origin: bottom right;
+}
+
+.checkin-pin {
+    transform-origin: bottom center;
+}
+
+.enlarge, .post-pin:hover, .checkin-pin:hover {
+    transform: scale(2);
+}
+
 .posts article {
     background: #fff;
     padding: 15px 0;
@@ -146,6 +162,19 @@ article.blog-post {
     max-width: 1000px;
     padding: 0 30px 0 60px;
     position: relative;
+}
+
+.home-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 999;
+}
+
+.home-container h1 {
+    padding: 20px;
+    background: #fff;
+    margin: 0;
 }
 
 article.blog-post .line {
