@@ -1,5 +1,4 @@
 var OneSignal = require('onesignal-node');
-var querystring = require("querystring");
 var myClient = new OneSignal.Client({      
     userAuthKey: 'MzRiZDcyMGItMzkxMC00MWQ1LTk5NTMtMDdlYjhjY2E1Y2Mw',      
     // note that "app" must have "appAuthKey" and "appId" keys      
@@ -11,9 +10,9 @@ exports.handler = function(event, context) {
         return { statusCode: 405, body: "Method Not Allowed" };
     }
     console.log(event.httpMethod);
-    // const params = querystring.parse(event.body);
-    console.log(event.body);
-    // console.log(params);
+    const parts = event.body.split('+');
+    const mail = parts.map(part => atob(part)).join(' ')
+    console.log(mail);
     var firstNotification = new OneSignal.Notification({      
         template_id: "726887ee-8f4f-4eaf-bc13-09e96864e467",
         included_segments: ["Subscribed Users"]     
