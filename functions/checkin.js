@@ -1,37 +1,25 @@
-const OneSignal = require('onesignal-node');
-const myClient = new OneSignal.Client({      
-    userAuthKey: 'MzRiZDcyMGItMzkxMC00MWQ1LTk5NTMtMDdlYjhjY2E1Y2Mw',      
-    app: { appAuthKey: 'MGIwZDBmOGQtYjRiYS00ZjliLWI4OGQtOWE0MDkxODM4YzAx', appId: '8ba1ae7c-e229-4102-a348-9c8b5c5923ed' }      
-});
 const axios = require('axios');
 
 exports.handler = function(event, context) {
-    if (event.httpMethod !== "POST") {
-        return { statusCode: 405, body: "Method Not Allowed" };
-    }    
     const parts = event.body.split('+');
     const mail = parts.map(part => {
         const buff = new Buffer(part, 'base64');
         return buff.toString('ascii');
     }).join(' ');
+
     const messageSearchTerm = 'Content-Disposition: form-data; name="text"';
     const messageSection = mail.substr(mail.indexOf(messageSearchTerm) + messageSearchTerm.length);
     const message = messageSection.substr(0, messageSection.indexOf('--xYzZY')).trim();
     const lat = message.split('lat: ')[1].split(' ')[0];
     const lon = message.split('lon: ')[1].split(' ')[0];
     const date = new Date();
+
     const doc = `---
 title: Auto check-in
 date: ${date.toISOString()}
 lat: '${lat}'
 lon: '${lon}'
 ---`;
-
-    const firstNotification = new OneSignal.Notification({      
-        template_id: "726887ee-8f4f-4eaf-bc13-09e96864e467",
-        included_segments: ["Subscribed Users"]     
-    });
-    myClient.sendNotification(firstNotification);
 
     axios({
         method: 'post',
