@@ -10,7 +10,7 @@ exports.handler = function(event, context) {
 
     const latStart = 'sent this message from: Lat ';
     const lat = mail.substr(mail.indexOf(latStart) + latStart.length).split(' ')[0];
-    const lon = mail.substr(mail.indexOf(latStart) + latStart.length).split(' ')[2].split('\n')[0];
+    const lon = mail.substr(mail.indexOf(latStart) + latStart.length).split(' ')[2].split('<')[0];
     const date = new Date();
 
     const doc = `---
